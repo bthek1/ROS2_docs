@@ -5,41 +5,105 @@
 
 ## What ROS 2 Is
 
-ROS 2 is not an operating system. It is a set of libraries and conventions for
-writing robot software as many small processes that talk to each other over a
-message bus. A robot becomes a graph of **nodes**, each one doing a single job
-(read the lidar, plan a path, drive the wheels), connected by **topics**,
-**services** and **actions**.
+ROS 2 is not an operating system. It is a set of libraries and conventions for writing robot
+software as many small processes that talk to each other over a message bus. A robot becomes
+a graph of **nodes**, each one doing a single job (read the lidar, plan a path, drive the
+wheels), connected by **topics**, **services** and **actions**.
 
-The important differences from ROS 1: there is no `roscore` (discovery is
-peer-to-peer via DDS), the transport is DDS rather than a custom protocol,
-real-time and multi-robot cases are first-class, and the build tool is `colcon`
-with `ament` packages rather than `catkin`.
+The important differences from ROS 1: there is no `roscore` (discovery is peer-to-peer via
+DDS), the transport is DDS rather than a custom protocol, real-time and multi-robot cases are
+first-class, and the build tool is `colcon` with `ament` packages rather than `catkin`.
 
-This site covers the parts worth writing down: the concepts that do not fit in
-a tutorial, the CLI commands actually used day to day, and the setup steps for
-getting a working environment.
+This site covers the parts worth writing down: the concepts that do not fit in a tutorial,
+the commands actually used day to day, and the failure modes that are hard to search for
+because the symptom is silence rather than an error.
 
 ------------------------------------------------------------------------
 
-## Contents
+## Which Distribution
+
+A ROS 2 distribution is pinned to one Ubuntu release, so the choice is mostly decided by what
+is on the robot.
+
+| Distribution     | Ubuntu | Support                                   |
+|------------------|--------|-------------------------------------------|
+| Humble Hawksbill | 22.04  | LTS, 5 years (to May 2027)                |
+| Jazzy Jalisco    | 24.04  | LTS, 5 years (to May 2029)                |
+| Kilted Kaiju     | 24.04  | non-LTS, about 18 months                  |
+| Rolling Ridley   | latest | rolling development, no stability promise |
+
+**Everything here targets Jazzy Jalisco on Ubuntu 24.04**, with Kilted and Rolling
+differences called out where they matter. Prefer an LTS: non-LTS releases get about 18
+months, which is shorter than most robot projects. Mixing distributions on one network works
+in principle (the wire protocol is DDS) but message definitions drift between releases, so
+treat it as something to avoid rather than rely on.
+
+------------------------------------------------------------------------
+
+## Core Concepts
+
+The layer everything else assumes: the process model, the three communication patterns, the
+type system, and how callbacks actually get run.
 
 | Notebook | What it covers |
 |----|----|
-| [01_Introduction.ipynb](01_Introduction.ipynb) | Distributions and support windows, installing ROS 2, workspace and package layout, the node/topic/service/action model, and the `ros2` CLI commands used most |
+| [01_Core_Concepts/00_Nodes_and_Topics.ipynb](01_Core_Concepts/00_Nodes_and_Topics.ipynb) | What a node is, topics as a streaming primitive, name resolution and namespaces, inspecting a live graph, and what changed from ROS 1 |
+| [01_Core_Concepts/01_Services_and_Actions.ipynb](01_Core_Concepts/01_Services_and_Actions.ipynb) | Choosing between the three patterns, service servers and clients, the callback deadlock, action servers with feedback and cancellation, goal states and preemption |
+| [01_Core_Concepts/02_Interfaces_and_Parameters.ipynb](01_Core_Concepts/02_Interfaces_and_Parameters.ipynb) | The standard message packages, defining custom msg/srv/action, parameter declaration and validation callbacks, YAML parameter files and the node-name mismatch trap |
+| [01_Core_Concepts/03_QoS_Profiles.ipynb](01_Core_Concepts/03_QoS_Profiles.ipynb) | Reliability, durability, history, the built-in profiles, and the incompatibility table for the case where two endpoints exist and no messages flow |
+| [01_Core_Concepts/04_Executors_Lifecycle_and_Composition.ipynb](01_Core_Concepts/04_Executors_Lifecycle_and_Composition.ipynb) | Single vs multi-threaded executors, callback groups and the deadlock fix, lifecycle node states, composition and intra-process zero copy |
+
+------------------------------------------------------------------------
+
+## Build System and Tooling
+
+Getting from an empty machine to a built, launched and introspected workspace.
+
+| Notebook | What it covers |
+|----|----|
+| [02_Build_and_Tooling/00_Workspaces_and_Packages.ipynb](02_Build_and_Tooling/00_Workspaces_and_Packages.ipynb) | Installing ROS 2 from apt, workspaces and overlay precedence, ament_python and ament_cmake manifests, colcon invocations worth knowing, rosdep |
+| [02_Build_and_Tooling/01_Launch.ipynb](02_Build_and_Tooling/01_Launch.ipynb) | Python launch files, substitutions and the two-stage evaluation, conditions, includes and namespace groups, remapping across a bringup, composable node containers |
+| [02_Build_and_Tooling/02_CLI_and_Introspection.ipynb](02_Build_and_Tooling/02_CLI_and_Introspection.ipynb) | The `ros2` subcommand reference, RViz2 and rqt, `ros2 doctor`, rosbag2 recording and replay, the logging system and its throttles |
+| [02_Build_and_Tooling/03_Client_Libraries.ipynb](02_Build_and_Tooling/03_Client_Libraries.ipynb) | The rclpy / rclcpp / rcl / rmw / DDS layering and which layer owns which symptom, what each client library is good for, swapping the middleware |
 
 ------------------------------------------------------------------------
 
 ## Not Covered Yet
 
-Placeholders, in rough order of how likely they are to get written:
+The tree has seven more sections planned, tracked in
+[issue \#16](https://github.com/bthek1/Knowledge/issues/16) on the superproject. In the order
+they are expected to land:
 
-- **Writing nodes** - `rclpy` and `rclcpp` node structure, publishers, subscribers, timers, parameters, lifecycle nodes.
-- **tf2** - coordinate frames, transform trees, `static_transform_publisher`, common frame conventions (`map` / `odom` / `base_link`).
-- **Navigation2** - costmaps, planners, controllers, behaviour trees.
-- **Simulation** - Gazebo / Ignition, URDF and xacro robot descriptions, `robot_state_publisher`.
-- **Visualisation and debugging** - RViz2, `rqt_graph`, `ros2 bag` record and replay.
-- **DDS and QoS** - reliability, durability and history settings, and the cases where the default profile is wrong.
-- **Deployment** - cross-compiling for arm64, running ROS 2 in containers, systemd units for launch files.
+- **`03_Spatial_and_Temporal/`** - tf2 frames and the transform tree, robot description
+  (URDF, xacro, SDF, `robot_state_publisher`), REP-103 and REP-105 conventions, wall vs
+  simulated time, and message synchronisation. Several of these will be runnable: transform
+  composition with scipy, forward kinematics from a parsed URDF, and the ApproximateTime
+  policy over synthetic streams.
+- **`04_Simulation_and_Hardware/`** - Gazebo and `ros_gz_bridge`, sensor plugins, Isaac Sim
+  and Webots, the sim-to-real gap, `ros2_control` (hardware interfaces, controller manager,
+  the standard controllers and broadcasters), serial and CAN drivers, micro-ROS, real-time
+  considerations.
+- **`05_Perception/`** - `image_transport` and `cv_bridge`, camera calibration and
+  rectification, `PointCloud2` decoding, depth and RGB-D pipelines, lidar processing, and
+  wiring an inference node into a graph.
+- **`06_Navigation_and_Manipulation/`** - `slam_toolbox`, visual SLAM, AMCL,
+  `robot_localization`, Nav2 bringup, costmaps and planners, behaviour trees, then MoveIt 2:
+  planning scene, kinematics, motion planners, servo and grasping.
+- **`07_Middleware_DDS/`** - discovery and domain IDs, the RMW implementations and their
+  tuning, multi-machine networking, and the Zenoh RMW. Several notebooks already point here
+  for the case of nodes that cannot see each other; until it exists, `ros2 doctor --report` and
+  `ROS_DOMAIN_ID` are the short answer.
+- **`08_Testing_Deployment_Ops/`** - pytest and gtest, `launch_testing`, the ament linters,
+  CI, containers and ARM cross-compilation, systemd and `robot_upstart`, diagnostics, SROS2,
+  and fleet tooling.
+- **`09_Ecosystem_and_Process/`** - the distribution and release cycle in full, REPs and
+  design documents, `rosdep` internals, package release with bloom, and ROS 1 to ROS 2
+  migration.
+
+The written sections already point forward to these, as backticked paths such as
+`07_Middleware_DDS/00_Discovery_and_RMW.ipynb` rather than as links, so no page on this site
+links to a page that does not exist. Each becomes a live link as its section lands.
+
+Nothing here is private, so there are no `p_` notebooks.
 
 ------------------------------------------------------------------------
