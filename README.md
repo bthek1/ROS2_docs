@@ -95,23 +95,54 @@ Images and point clouds as ROS 2 carries them, and what it takes to put a model 
 
 ------------------------------------------------------------------------
 
+## Simulation and Hardware
+
+Where ROS 2 meets a simulator and where it meets a motor. The `ros2_control` boundary is what lets
+one set of controllers drive both.
+
+| Notebook | What it covers |
+|----|----|
+| [04_Simulation_and_Hardware/00_Gazebo_and_Bridges.ipynb](04_Simulation_and_Hardware/00_Gazebo_and_Bridges.ipynb) | Which Gazebo is which (Classic is end of life), `gz` basics, ros_gz_bridge direction syntax and config, bridging the clock first, spawning from one URDF, sensor plugins and the missing-system trap, authoring worlds |
+| [04_Simulation_and_Hardware/01_Other_Simulators_and_Sim_to_Real.ipynb](04_Simulation_and_Hardware/01_Other_Simulators_and_Sim_to_Real.ipynb) | Webots and Isaac Sim against Gazebo with their real costs, a table for choosing, what transfers from simulation unchanged and what has to be earned on hardware, and the practices that narrow the gap |
+| [04_Simulation_and_Hardware/02_ros2_control.ipynb](04_Simulation_and_Hardware/02_ros2_control.ipynb) | The control loop and its layers, declaring hardware in the URDF, writing a hardware interface and the real-time rules for read/write, the controller manager lifecycle, the standard controllers, and mock hardware as the fastest test |
+| [04_Simulation_and_Hardware/03_Drivers_and_micro_ROS.ipynb](04_Simulation_and_Hardware/03_Drivers_and_micro_ROS.ipynb) | What a driver owes the graph, serial and udev rules, SocketCAN and bus-off, micro-ROS and its agent and when not to use it, and what real-time actually requires |
+
+------------------------------------------------------------------------
+
+## Middleware and DDS
+
+The layer underneath everything, and the one that owns the case of two machines that cannot see each
+other.
+
+| Notebook | What it covers |
+|----|----|
+| [07_Middleware_DDS/00_Discovery_and_RMW.ipynb](07_Middleware_DDS/00_Discovery_and_RMW.ipynb) | Discovery without a master, the port arithmetic a domain ID implies, discovery-range settings, the RMW implementations and the rule that they must match, interface pinning on a multi-homed machine, the discovery server, and a symptom-to-layer table |
+| [07_Middleware_DDS/01_Multi_Machine_and_Zenoh.ipynb](07_Middleware_DDS/01_Multi_Machine_and_Zenoh.ipynb) | The three settings that must agree across machines, multicast over Wi-Fi and static peers, the bandwidth arithmetic and the measured cost of per-subscriber copies, VPNs and their caveats, and the Zenoh RMW |
+
+------------------------------------------------------------------------
+
+## Navigation and Manipulation
+
+The two big application stacks. The costmap and behaviour-tree notebooks build working miniatures of
+both mechanisms rather than describing them.
+
+| Notebook | What it covers |
+|----|----|
+| [06_Navigation_and_Manipulation/00_SLAM_and_Localization.ipynb](06_Navigation_and_Manipulation/00_SLAM_and_Localization.ipynb) | The map/odom contract and who may publish it, slam_toolbox modes and the save-versus-serialize trap, AMCL tuning and why it needs an initial pose, robot_localization EKF configuration, and RGB-D SLAM lessons from real hardware |
+| [06_Navigation_and_Manipulation/01_Nav2_Bringup.ipynb](06_Navigation_and_Manipulation/01_Nav2_Bringup.ipynb) | What the stack is made of and the request path for one goal, the lifecycle manager and its bond timeout, how the parameter file is keyed, sending goals, and a bring-up symptom table |
+| [06_Navigation_and_Manipulation/02_Costmaps_Planners_and_Controllers.ipynb](06_Navigation_and_Manipulation/02_Costmaps_Planners_and_Controllers.ipynb) | Costmap layers and why the local one lives in odom, the inflation cost model built and plotted, A\* through a doorway, the radius that decides passability against the scaling factor that only shapes preference, and pure pursuit executed and measured |
+| [06_Navigation_and_Manipulation/03_Behaviour_Trees_and_Recovery.ipynb](06_Navigation_and_Manipulation/03_Behaviour_Trees_and_Recovery.ipynb) | Why a tree rather than a state machine, Sequence/Fallback/decorator semantics implemented and ticked, Nav2’s default tree and its three custom node types, the recovery behaviours and their real risks, waypoint following |
+| [06_Navigation_and_Manipulation/04_MoveIt2_Overview.ipynb](06_Navigation_and_Manipulation/04_MoveIt2_Overview.ipynb) | The move_group architecture, the planning scene and collision objects, attached objects and the octomap, the SRDF and its machine-generated collision list, what the Setup Assistant produces, and where a plan fails to reach hardware |
+| [06_Navigation_and_Manipulation/05_Kinematics_and_Motion_Planning.ipynb](06_Navigation_and_Manipulation/05_Kinematics_and_Motion_Planning.ipynb) | Why IK is hard, the solvers and when to swap KDL, OMPL against Pilz and what sampling costs you, servo and its singularity thresholds, trajectory execution tolerances, and pick and place as an explicit sequence |
+
+------------------------------------------------------------------------
+
 ## Not Covered Yet
 
-The tree has five more sections planned, tracked in
+The tree has two more sections planned, tracked in
 [issue \#16](https://github.com/bthek1/Knowledge/issues/16) on the superproject. In the order
 they are expected to land:
 
-- **`04_Simulation_and_Hardware/`** - Gazebo and `ros_gz_bridge`, sensor plugins, Isaac Sim
-  and Webots, the sim-to-real gap, `ros2_control` (hardware interfaces, controller manager,
-  the standard controllers and broadcasters), serial and CAN drivers, micro-ROS, real-time
-  considerations.
-- **`06_Navigation_and_Manipulation/`** - `slam_toolbox`, visual SLAM, AMCL,
-  `robot_localization`, Nav2 bringup, costmaps and planners, behaviour trees, then MoveIt 2:
-  planning scene, kinematics, motion planners, servo and grasping.
-- **`07_Middleware_DDS/`** - discovery and domain IDs, the RMW implementations and their
-  tuning, multi-machine networking, and the Zenoh RMW. Several notebooks already point here
-  for the case of nodes that cannot see each other; until it exists, `ros2 doctor --report` and
-  `ROS_DOMAIN_ID` are the short answer.
 - **`08_Testing_Deployment_Ops/`** - pytest and gtest, `launch_testing`, the ament linters,
   CI, containers and ARM cross-compilation, systemd and `robot_upstart`, diagnostics, SROS2,
   and fleet tooling.
