@@ -68,24 +68,43 @@ Getting from an empty machine to a built, launched and introspected workspace.
 
 ------------------------------------------------------------------------
 
+## Spatial and Temporal Foundations
+
+Where things are and when they were measured. The transform maths, the kinematics and the
+synchronisation policy in these four run for real, with numpy and scipy rather than a ROS
+install.
+
+| Notebook | What it covers |
+|----|----|
+| [03_Spatial_and_Temporal/00_tf2.ipynb](03_Spatial_and_Temporal/00_tf2.ipynb) | The transform tree and the map/odom contract, broadcasters and listeners, transform composition and inversion worked through numerically, time-indexed lookups, and a table of tree failures by symptom |
+| [03_Spatial_and_Temporal/01_Robot_Description.ipynb](03_Spatial_and_Temporal/01_Robot_Description.ipynb) | URDF links and joints, forward kinematics computed from a parsed URDF and checked against a closed form, robot_state_publisher and what publishes /joint_states, xacro macros, and where SDF fits |
+| [03_Spatial_and_Temporal/02_Conventions_and_Time.ipynb](03_Spatial_and_Temporal/02_Conventions_and_Time.ipynb) | REP-103 units and axes, ENU/NED conversion and the heading sign trap, REP-105 frame guarantees, wall against simulated time, integer nanosecond stamps, and what clock skew does to a lookup |
+| [03_Spatial_and_Temporal/03_Message_Synchronisation.ipynb](03_Spatial_and_Temporal/03_Message_Synchronisation.ipynb) | Why two sensor streams never align, ExactTime against ApproximateTime, the slop trade-off measured on synthetic streams, how to pick slop from robot speed, and diagnosing a silent synchroniser |
+
+------------------------------------------------------------------------
+
+## Perception
+
+Images and point clouds as ROS 2 carries them, and what it takes to put a model in the graph.
+
+| Notebook | What it covers |
+|----|----|
+| [05_Perception/00_Images_and_Calibration.ipynb](05_Perception/00_Images_and_Calibration.ipynb) | image_transport and the compressed transports, cv_bridge encodings and the depth-unit trap, what CameraInfo holds, pinhole projection and rectification computed with numpy and OpenCV, and a symptom table for wrong geometry |
+| [05_Perception/01_Point_Clouds_and_Lidar.ipynb](05_Perception/01_Point_Clouds_and_Lidar.ipynb) | PointCloud2 as a byte buffer decoded with numpy structured dtypes, why field offsets are not optional, pointcloud_to_laserscan reimplemented and plotted, what the 2D reduction throws away, and organised clouds from depth images |
+| [05_Perception/02_Inference_Node_Integration.ipynb](05_Perception/02_Inference_Node_Integration.ipynb) | The QoS profile that stops a slow model queueing, keeping inference off the executor, choosing between ONNX Runtime, TensorRT and OpenVINO, which vision messages to publish, and budgeting on a small machine |
+
+------------------------------------------------------------------------
+
 ## Not Covered Yet
 
-The tree has seven more sections planned, tracked in
+The tree has five more sections planned, tracked in
 [issue \#16](https://github.com/bthek1/Knowledge/issues/16) on the superproject. In the order
 they are expected to land:
 
-- **`03_Spatial_and_Temporal/`** - tf2 frames and the transform tree, robot description
-  (URDF, xacro, SDF, `robot_state_publisher`), REP-103 and REP-105 conventions, wall vs
-  simulated time, and message synchronisation. Several of these will be runnable: transform
-  composition with scipy, forward kinematics from a parsed URDF, and the ApproximateTime
-  policy over synthetic streams.
 - **`04_Simulation_and_Hardware/`** - Gazebo and `ros_gz_bridge`, sensor plugins, Isaac Sim
   and Webots, the sim-to-real gap, `ros2_control` (hardware interfaces, controller manager,
   the standard controllers and broadcasters), serial and CAN drivers, micro-ROS, real-time
   considerations.
-- **`05_Perception/`** - `image_transport` and `cv_bridge`, camera calibration and
-  rectification, `PointCloud2` decoding, depth and RGB-D pipelines, lidar processing, and
-  wiring an inference node into a graph.
 - **`06_Navigation_and_Manipulation/`** - `slam_toolbox`, visual SLAM, AMCL,
   `robot_localization`, Nav2 bringup, costmaps and planners, behaviour trees, then MoveIt 2:
   planning scene, kinematics, motion planners, servo and grasping.
@@ -102,7 +121,8 @@ they are expected to land:
 
 The written sections already point forward to these, as backticked paths such as
 `07_Middleware_DDS/00_Discovery_and_RMW.ipynb` rather than as links, so no page on this site
-links to a page that does not exist. Each becomes a live link as its section lands.
+links to a page that does not exist. Each becomes a live link as its section lands, as the
+Spatial and Perception references did.
 
 Nothing here is private, so there are no `p_` notebooks.
 
