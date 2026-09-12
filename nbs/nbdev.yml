@@ -1,0 +1,14 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "ROS2_docs"
+  site-url: "https://bthek1.github.io/ROS2_docs"
+  description: ""
+  repo-branch: main
+  repo-url: "https://github.com/bthek1/ROS2_docs"
+
+format-links:
+  - html
+  - format: commonmark
+    text: Markdown

@@ -1,0 +1,145 @@
+project:
+  type: website
+
+format:
+  html:
+    author: "Benedict Thekkel"
+    theme:
+      light: flatly
+      dark: darkly
+    css: styles.css
+    toc: true
+    
+website:
+  image: "Logo.svg"
+  favicon: "favi.svg"
+  reader-mode: true
+  back-to-top-navigation: true
+  page-navigation: true
+  twitter-card: true
+  open-graph: true
+  repo-actions: [edit, issue]
+  search:
+    location: navbar
+    type: overlay
+
+  navbar:
+    background: dark
+    logo: "Logo.svg"
+    logo-alt: "Benedict Thekkel"
+    collapse-below: lg
+    title: false
+    left:
+
+      - text: "Deep Learning"
+        menu:
+        - text: "Fast AI course"
+          href: https://bthek1.github.io/FastAI_course/
+        - text: "DL Methods"
+          href: https://bthek1.github.io/DL_methods/
+        - text: "DL Tasks"
+          href: https://bthek1.github.io/DL_tasks/
+          
+      - text: "ML Techniques"
+        menu:
+        - text: "ML Methods"
+          href: https://bthek1.github.io/ML_methods/
+        - text: "Time series"
+          href: https://bthek1.github.io/TimeSeriesML/
+ 
+      - text: "Web"
+        menu:
+        - text: "Web Development"
+          href: https://bthek1.github.io/WEB_doc/
+        - text: "Front End"
+          href: https://bthek1.github.io/Front_End/
+        - text: "Back End"
+          href: https://bthek1.github.io/Back_End/
+        - text: "IaaS"
+          href: https://bthek1.github.io/IaaS_docs/
+          
+          
+      - text: "Tools"
+        menu:
+        - text: "Software Tools"
+          href: https://bthek1.github.io/Software_Tools/ 
+        - text: "Hardware Tools"
+          href: https://bthek1.github.io/Hardware_Tools/ 
+        - text: "Python Libraries"
+          href: https://bthek1.github.io/Python_Libs/
+        - text: "Nbdev Automation"
+          href: https://bthek1.github.io/nbdevAuto/
+        - text: "ROS 2"
+          href: https://bthek1.github.io/ROS2_docs/
+
+      - text: "Business"
+        menu:
+        - text: "Business Doc"
+          href: https://bthek1.github.io/Business_doc/
+        - text: "Ideas Doc"
+          href: https://bthek1.github.io/Philosophy_doc/
+        - text: "Finances"
+          href: https://bthek1.github.io/Finances/ 
+        - text: "Other"
+          href: https://bthek1.github.io/Other/
+          
+      - text: "Blog"
+        href: https://bthek1.github.io/bthek1_blog/
+        
+      - text: "Help"
+        menu:
+          - text: "Report a Bug"
+            icon: "bug"
+            href: "https://github.com/bthek1/bthek1_blog/issues"
+          - text: "Ask a Question"
+            icon: "chat-right-text"
+            href: "https://github.com/bthek1/bthek1_blog/issues"
+          - text: "FAQ"
+            icon: "question-circle"
+            href: "https://github.com/bthek1/bthek1_blog/issues"
+          
+    tools:
+      - icon: github
+        href: "https://github.com/bthek1"
+        aria-label: Github
+      - icon: linkedin
+        href: "https://www.linkedin.com/in/benedict-thekkel/"
+        aria-label: Linkedin
+
+
+  page-footer:
+    center:
+      - text: "About"
+        href: "index.ipynb"
+      - text: "FAQ"
+        href: "https://github.com/bthek1/bthek1_blog/issues"    
+      - text: "License"
+        href: "https://bthek1.github.io/bthek1_blog/index.html"
+      - text: "Trademark"
+        href: "index.ipynb"
+        
+        
+    right:
+      - icon: github
+        href: "https://github.com/bthek1"
+        aria-label: Github
+      - icon: linkedin
+        href: "https://www.linkedin.com/in/benedict-thekkel/"
+        aria-label: Linkedin
+
+  comments: 
+    utterances:
+      repo: quarto-dev/quarto-web
+        
+  # Visibility rule: only index.ipynb and digit-initial notebooks are public.
+  # "p_"-prefixed notebooks (p_04_Pay.ipynb) are private and deliberately fall
+  # outside the glob. Note this hides them from the menu only - Quarto still
+  # renders and publishes p_*.html.
+  sidebar:
+    style: floating
+    contents:
+      - "index.ipynb"
+      - auto: "[0-9]*.ipynb"
+
+
+metadata-files: [nbdev.yml]

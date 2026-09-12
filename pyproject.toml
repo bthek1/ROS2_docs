@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ROS2_docs"
+dynamic = ["version"]
+description = ""
+readme = "README.md"
+requires-python = ">=3.7"
+license = {text = "Apache-2.0"}
+authors = [{name = "Benedict Thekkel", email = "bthekkel1@gmail.com"}]
+keywords = ['nbdev', 'jupyter', 'notebook', 'python']
+classifiers = ["Natural Language :: English", "Intended Audience :: Developers", "Development Status :: 3 - Alpha", "Programming Language :: Python :: 3", "Programming Language :: Python :: 3 :: Only"]
+dependencies = []
+
+[project.urls]
+Repository = "https://github.com/bthek1/ROS2_docs"
+Documentation = "https://bthek1.github.io/ROS2_docs"
+
+[project.entry-points.nbdev]
+ROS2_docs = "ROS2_docs._modidx:d"
+
+[tool.setuptools.dynamic]
+version = {attr = "ROS2_docs.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["ROS2_docs"]
+
+[tool.nbdev]
