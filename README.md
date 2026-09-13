@@ -137,23 +137,67 @@ both mechanisms rather than describing them.
 
 ------------------------------------------------------------------------
 
+## Testing, Deployment and Operations
+
+Getting code verified, onto a robot, and keeping it running there.
+
+| Notebook | What it covers |
+|----|----|
+| [08_Testing_Deployment_Ops/00_Testing_and_Linting.ipynb](08_Testing_Deployment_Ops/00_Testing_and_Linting.ipynb) | The three testable levels and why most of a suite should be the first, pytest fixtures that pair init and shutdown, gtest wiring, launch_testing and why it is the flakiest thing you own, the ament linters, and CI that catches an incomplete manifest |
+| [08_Testing_Deployment_Ops/01_Containers_and_Cross_Compilation.ipynb](08_Testing_Deployment_Ops/01_Containers_and_Cross_Compilation.ipynb) | The official images and a multi-stage build, why DDS makes container networking the real problem, dev containers, three routes to an arm64 build and when each is worth it |
+| [08_Testing_Deployment_Ops/02_Service_Management_and_Diagnostics.ipynb](08_Testing_Deployment_Ops/02_Service_Management_and_Diagnostics.ipynb) | A systemd unit for a launch file and the environment trap that breaks it, robot_upstart, diagnostic_updater with a frequency watchdog, and a symptom table for a robot that will not start |
+| [08_Testing_Deployment_Ops/03_Security_and_Fleet_Ops.ipynb](08_Testing_Deployment_Ops/03_Security_and_Fleet_Ops.ipynb) | That the default is no security at all, SROS2 and its real maintenance cost, Foxglove and rosbridge for remote work, and what fleet operation needs beyond one robot |
+
+------------------------------------------------------------------------
+
+## Ecosystem and Process
+
+How the project releases, what the conventions are, and migrating from ROS 1.
+
+| Notebook | What it covers |
+|----|----|
+| [09_Ecosystem_and_Process/00_Distros_REPs_and_rosdep.ipynb](09_Ecosystem_and_Process/00_Distros_REPs_and_rosdep.ipynb) | What an LTS commitment does and does not cover, the upgrade trap where an OS upgrade silently changes the ROS distribution, the REPs worth knowing by number, and how rosdep resolves a dependency |
+| [09_Ecosystem_and_Process/01_Release_and_Migration.ipynb](09_Ecosystem_and_Process/01_Release_and_Migration.ipynb) | Releasing with bloom and what the buildfarm does with it, the ROS 1 to ROS 2 mapping, the conversions that take real rework, and why ros1_bridge is a transition tool rather than an architecture |
+
+------------------------------------------------------------------------
+
 ## Not Covered Yet
 
-The tree has two more sections planned, tracked in
-[issue \#16](https://github.com/bthek1/Knowledge/issues/16) on the superproject. In the order
-they are expected to land:
+All 34 notebooks planned for this site exist, so what follows is a list of real gaps in the subject
+rather than a roadmap.
 
-- **`08_Testing_Deployment_Ops/`** - pytest and gtest, `launch_testing`, the ament linters,
-  CI, containers and ARM cross-compilation, systemd and `robot_upstart`, diagnostics, SROS2,
-  and fleet tooling.
-- **`09_Ecosystem_and_Process/`** - the distribution and release cycle in full, REPs and
-  design documents, `rosdep` internals, package release with bloom, and ROS 1 to ROS 2
-  migration.
+**No runnable ROS 2 code anywhere, deliberately.** ROS 2 Jazzy is apt-installed against Python 3.12 and
+`rclpy` cannot be pip-installed into this repository’s Python 3.14 virtual environment. The eight notebooks
+that execute are therefore pure-Python reimplementations of ROS 2 *mechanisms* - transform composition,
+forward kinematics from a URDF, the ApproximateTime policy, PointCloud2 decoding, costmap inflation, A\* and
+pure pursuit, a behaviour-tree tick engine - not ROS 2 programs. Every `rclpy` and `rclcpp` snippet on this
+site is illustrative and unexecuted.
 
-The written sections already point forward to these, as backticked paths such as
-`07_Middleware_DDS/00_Discovery_and_RMW.ipynb` rather than as links, so no page on this site
-links to a page that does not exist. Each becomes a live link as its section lands, as the
-Spatial and Perception references did.
+Subjects a reader might reasonably expect and will not find:
+
+- **Legged locomotion and whole-body control.** Nothing here covers balance, contact scheduling or
+  model-predictive whole-body control.
+- **Multi-robot task allocation.** The networking for multiple robots is covered in
+  [07_Middleware_DDS/01_Multi_Machine_and_Zenoh.ipynb](07_Middleware_DDS/01_Multi_Machine_and_Zenoh.ipynb);
+  deciding which robot does which job is not.
+- **Functional safety and certification.** ISO 10218, ISO 3691-4, performance levels and safety-rated
+  hardware are a different discipline from anything here, and SROS2 is not a safety mechanism.
+- **Vendor-specific driver guides.** No per-lidar or per-arm setup walkthroughs; the general obligations of
+  a driver are in
+  [04_Simulation_and_Hardware/03_Drivers_and_micro_ROS.ipynb](04_Simulation_and_Hardware/03_Drivers_and_micro_ROS.ipynb).
+- **SLAM algorithm internals.** Graph optimisation, scan matching and bundle adjustment are treated as
+  things `slam_toolbox` and RTAB-Map do, not as mathematics to derive.
+- **Isaac ROS in depth.** NITROS, `isaac_ros_visual_slam` and nvblox are mentioned as options, not
+  documented.
+- **MoveIt Task Constructor in depth.** Named as the right tool for multi-stage manipulation, with its
+  stage API left uncovered.
+- **Real-time measurements.** The requirements for hard real-time are described; no `cyclictest` numbers or
+  tuned configurations are presented.
+- **Windows and macOS.** Everything assumes Ubuntu 24.04.
+- **Gazebo Classic**, excluded on purpose: it reached end of life in January 2025.
+
+This is a set of working notes, not an API reference. For API documentation use `docs.ros.org`; for the
+reasoning behind ROS 2’s design, `design.ros2.org`.
 
 Nothing here is private, so there are no `p_` notebooks.
 
