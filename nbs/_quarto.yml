@@ -1,5 +1,24 @@
 project:
   type: website
+  # Publication rule: only index.ipynb and digit-initial notebooks are rendered.
+  # "p_"-prefixed notebooks are private and never reach _docs or gh-pages.
+  #
+  # Two traps, both measured (2026-09-21). Do not "simplify" this list:
+  #   1. A glob that matches directories ("*" or "**/*") pulls whole
+  #      subdirectories in, and the "!" lines below then stop applying to the
+  #      files inside them. The per-extension globs are load-bearing.
+  #   2. Excluding a file by its exact path (e.g. "!Tax/01_Tax.ipynb") demotes
+  #      it to a resource, and Quarto copies the raw .ipynb into _docs. Exclude
+  #      by glob only; to hide a numbered notebook, rename it to p_.
+  # The .md lines exist for nbdevAuto's CHANGELOG.md, the fleet's only
+  # non-notebook page.
+  render:
+    - "*.ipynb"
+    - "**/*.ipynb"
+    - "*.md"
+    - "**/*.md"
+    - "!p_*.ipynb"
+    - "!**/p_*.ipynb"
 
 format:
   html:
@@ -131,10 +150,10 @@ website:
     utterances:
       repo: quarto-dev/quarto-web
         
-  # Visibility rule: only index.ipynb and digit-initial notebooks are public.
-  # "p_"-prefixed notebooks (p_04_Pay.ipynb) are private and deliberately fall
-  # outside the glob. Note this hides them from the menu only - Quarto still
-  # renders and publishes p_*.html.
+  # Sidebar menu. The "auto" glob matches digit-initial notebooks only, so
+  # "p_"-prefixed ones (p_04_Pay.ipynb) stay out of the menu. This is the
+  # cosmetic half of the rule; the project.render block above is the half that
+  # actually keeps them off the published site.
   sidebar:
     style: floating
     contents:
