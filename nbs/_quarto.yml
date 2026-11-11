@@ -83,7 +83,9 @@ website:
         - text: "Software Tools"
           href: https://bthek1.github.io/Software_Tools/ 
         - text: "Hardware Tools"
-          href: https://bthek1.github.io/Hardware_Tools/ 
+          href: https://bthek1.github.io/Hardware_Tools/
+        - text: "Electrical Docs"
+          href: https://bthek1.github.io/Electrical_Docs/
         - text: "Python Libraries"
           href: https://bthek1.github.io/Python_Libs/
         - text: "Nbdev Automation"
