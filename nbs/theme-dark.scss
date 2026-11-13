@@ -1,0 +1,29 @@
+/*-- scss:defaults --*/
+// Dark mode colours, taken from the amber end of the Logo.svg gradient. The logo
+// purple is too dark to read on a dark page, so the two modes lead with opposite ends.
+// Every text colour here passes WCAG AA (4.5:1) on both $body-bg and $code-block-bg.
+$body-bg: #17111C;
+$body-color: #ECE4F0;
+$text-muted: #A898B0;
+$code-block-bg: #211829;
+// Without these, inline code inherits a light background from darkly.
+$code-bg: #211829;
+$code-color: #E0679A;
+
+$primary: #F9B01B;
+$secondary: #E96529;
+$danger: #F06A6A;
+$info: #B57BD6;
+$warning: #F79515;
+
+$link-color: #F79515;
+
+$navbar-bg: #2A0E3A;
+$navbar-fg: #E9DDF0;
+$navbar-hl: #F9B01B;
+
+/*-- scss:rules --*/
+// The plum navbar is close to the dark page colour, so a rule marks its edge.
+.navbar {
+  border-bottom: 1px solid $secondary;
+}

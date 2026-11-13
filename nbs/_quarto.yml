@@ -23,11 +23,12 @@ project:
 format:
   html:
     author: "Benedict Thekkel"
-    # custom.scss holds the shared variables and rules. It replaces the per-submodule
+    # custom.scss holds the rules shared by both modes. It replaces the per-submodule
     # styles.css and must stay listed under both themes, or dark mode loses it.
+    # theme-light.scss and theme-dark.scss hold the per-mode colours from Logo.svg.
     theme:
-      light: [flatly, custom.scss]
-      dark: [darkly, custom.scss]
+      light: [flatly, custom.scss, theme-light.scss]
+      dark: [darkly, custom.scss, theme-dark.scss]
     toc: true
     
 # This file is a template. `just copy_quarto` fills bthek1 and ROS2_docs from each
@@ -47,8 +48,9 @@ website:
     location: navbar
     type: overlay
 
+  # The navbar colour is $navbar-bg in the theme files. A `background:` key here
+  # would override both modes.
   navbar:
-    background: dark
     logo: "Logo.svg"
     logo-alt: "Benedict Thekkel"
     collapse-below: lg

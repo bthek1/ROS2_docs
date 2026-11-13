@@ -1,7 +1,7 @@
 /*-- scss:defaults --*/
-// Bootstrap and Bootswatch variables ($primary, $font-family-sans-serif, ...) go here.
 // This file is layered on both the light and the dark theme, so a value set here
-// applies to both modes.
+// applies to both modes: use it for mode-independent variables such as fonts.
+// Colours differ per mode and live in theme-light.scss and theme-dark.scss.
 
 /*-- scss:rules --*/
 .cell {
@@ -20,7 +20,7 @@
   margin-left: 0.8rem;
   margin-top: 0;
   background: none;
-  border-left: 2px solid lightsalmon;
+  border-left: 2px solid $secondary;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
