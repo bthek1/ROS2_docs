@@ -29,6 +29,10 @@ format:
     theme:
       light: [flatly, custom.scss, theme-light.scss]
       dark: [darkly, custom.scss, theme-dark.scss]
+    respect-user-color-scheme: true
+    # Default body-width is 800px. Wider gives notebook tables and charts room.
+    grid:
+      body-width: 1000px
     toc: true
     
 # This file is a template. `just copy_quarto` fills bthek1 and ROS2_docs from each
