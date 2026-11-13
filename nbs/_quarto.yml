@@ -40,6 +40,10 @@ format:
 # cannot do this itself: a {{< meta >}} shortcode in a navbar or footer href is
 # left unexpanded (tested on Quarto 1.10).
 website:
+  # Also forces a serial render: nbdev >=3.3.28 renders pages in parallel workers
+  # unless llms-txt (or a pre/post-render script) is set, and that drops the blog's
+  # RSS feed (index.xml). Bonus: each site publishes llms.txt + .llms.md pages.
+  llms-txt: true
   image: "Logo.svg"
   favicon: "favi.svg"
   reader-mode: true
