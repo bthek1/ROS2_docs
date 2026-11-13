@@ -22,8 +22,9 @@ $navbar-bg: #2A0E3A;
 $navbar-fg: #E9DDF0;
 $navbar-hl: #F9B01B;
 
+// darkly fills a hovered dropdown item with $primary but keeps the light body text,
+// which is unreadable on amber. Dark text on amber is about 10:1.
+$dropdown-link-hover-color: $body-bg;
+$dropdown-link-active-color: $body-bg;
+
 /*-- scss:rules --*/
-// The plum navbar is close to the dark page colour, so a rule marks its edge.
-.navbar {
-  border-bottom: 1px solid $secondary;
-}

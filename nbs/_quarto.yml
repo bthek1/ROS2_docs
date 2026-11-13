@@ -59,7 +59,7 @@ website:
 
       - text: "Deep Learning"
         menu:
-        - text: "Fast AI course"
+        - text: "FastAI course"
           href: https://bthek1.github.io/FastAI_course/
         - text: "DL Methods"
           href: https://bthek1.github.io/DL_methods/
@@ -70,18 +70,18 @@ website:
         menu:
         - text: "ML Methods"
           href: https://bthek1.github.io/ML_methods/
-        - text: "Time series"
-          href: https://bthek1.github.io/TimeSeriesML/
+        - text: "ML Timeseries"
+          href: https://bthek1.github.io/ML_Timeseries/
  
       - text: "Web"
         menu:
         - text: "Web Development"
-          href: https://bthek1.github.io/WEB_doc/
+          href: https://bthek1.github.io/Web_development/
         - text: "Front End"
           href: https://bthek1.github.io/Front_End/
         - text: "Back End"
           href: https://bthek1.github.io/Back_End/
-        - text: "IaaS"
+        - text: "IaaS Docs"
           href: https://bthek1.github.io/IaaS_docs/
           
           
@@ -93,17 +93,17 @@ website:
           href: https://bthek1.github.io/Hardware_Tools/
         - text: "Electrical Docs"
           href: https://bthek1.github.io/Electrical_Docs/
-        - text: "Python Libraries"
+        - text: "Python Libs"
           href: https://bthek1.github.io/Python_Libs/
         - text: "Nbdev Automation"
           href: https://bthek1.github.io/nbdevAuto/
-        - text: "ROS 2"
+        - text: "ROS2 Docs"
           href: https://bthek1.github.io/ROS2_docs/
 
       - text: "Business"
         menu:
-        - text: "Business Doc"
-          href: https://bthek1.github.io/Business_doc/
+        - text: "Business Docs"
+          href: https://bthek1.github.io/Business_docs/
         - text: "Finances"
           href: https://bthek1.github.io/Finances/
 
