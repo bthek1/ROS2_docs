@@ -1,0 +1,174 @@
+# ROS 2
+
+Notes on ROS 2 (Robot Operating System 2): the core concepts, the build and launch tooling, and the workflow for building and running robot software.
+
+Author
+
+Benedict Thekkel
+
+## What ROS 2 Is
+
+ROS 2 is not an operating system. It is a set of libraries and conventions for writing robot software as many small processes that talk to each other over a message bus. A robot becomes a graph of **nodes**, each one doing a single job (read the lidar, plan a path, drive the wheels), connected by **topics**, **services** and **actions**.
+
+The important differences from ROS 1: there is no `roscore` (discovery is peer-to-peer via DDS), the transport is DDS rather than a custom protocol, real-time and multi-robot cases are first-class, and the build tool is `colcon` with `ament` packages rather than `catkin`.
+
+This site covers the parts worth writing down: the concepts that do not fit in a tutorial, the commands actually used day to day, and the failure modes that are hard to search for because the symptom is silence rather than an error.
+
+------------------------------------------------------------------------
+
+## Which Distribution
+
+A ROS 2 distribution is pinned to one Ubuntu release, so the choice is mostly decided by what is on the robot.
+
+| Distribution     | Ubuntu | Support                                   |
+|------------------|--------|-------------------------------------------|
+| Humble Hawksbill | 22.04  | LTS, 5 years (to May 2027)                |
+| Jazzy Jalisco    | 24.04  | LTS, 5 years (to May 2029)                |
+| Kilted Kaiju     | 24.04  | non-LTS, about 18 months                  |
+| Rolling Ridley   | latest | rolling development, no stability promise |
+
+**Everything here targets Jazzy Jalisco on Ubuntu 24.04**, with Kilted and Rolling differences called out where they matter. Prefer an LTS: non-LTS releases get about 18 months, which is shorter than most robot projects. Mixing distributions on one network works in principle (the wire protocol is DDS) but message definitions drift between releases, so treat it as something to avoid rather than rely on.
+
+------------------------------------------------------------------------
+
+## Core Concepts
+
+The layer everything else assumes: the process model, the three communication patterns, the type system, and how callbacks actually get run.
+
+| Notebook | What it covers |
+|----|----|
+| [01_Core_Concepts/00_Nodes_and_Topics.ipynb](01_Core_Concepts/nodes_and_topics.llms.md) | What a node is, topics as a streaming primitive, name resolution and namespaces, inspecting a live graph, and what changed from ROS 1 |
+| [01_Core_Concepts/01_Services_and_Actions.ipynb](01_Core_Concepts/services_and_actions.llms.md) | Choosing between the three patterns, service servers and clients, the callback deadlock, action servers with feedback and cancellation, goal states and preemption |
+| [01_Core_Concepts/02_Interfaces_and_Parameters.ipynb](01_Core_Concepts/interfaces_and_parameters.llms.md) | The standard message packages, defining custom msg/srv/action, parameter declaration and validation callbacks, YAML parameter files and the node-name mismatch trap |
+| [01_Core_Concepts/03_QoS_Profiles.ipynb](01_Core_Concepts/qos_profiles.llms.md) | Reliability, durability, history, the built-in profiles, and the incompatibility table for the case where two endpoints exist and no messages flow |
+| [01_Core_Concepts/04_Executors_Lifecycle_and_Composition.ipynb](01_Core_Concepts/executors_lifecycle_and_composition.llms.md) | Single vs multi-threaded executors, callback groups and the deadlock fix, lifecycle node states, composition and intra-process zero copy |
+
+------------------------------------------------------------------------
+
+## Build System and Tooling
+
+Getting from an empty machine to a built, launched and introspected workspace.
+
+| Notebook | What it covers |
+|----|----|
+| [02_Build_and_Tooling/00_Workspaces_and_Packages.ipynb](02_Build_and_Tooling/workspaces_and_packages.llms.md) | Installing ROS 2 from apt, workspaces and overlay precedence, ament_python and ament_cmake manifests, colcon invocations worth knowing, rosdep |
+| [02_Build_and_Tooling/01_Launch.ipynb](02_Build_and_Tooling/launch.llms.md) | Python launch files, substitutions and the two-stage evaluation, conditions, includes and namespace groups, remapping across a bringup, composable node containers |
+| [02_Build_and_Tooling/02_CLI_and_Introspection.ipynb](02_Build_and_Tooling/cli_and_introspection.llms.md) | The `ros2` subcommand reference, RViz2 and rqt, `ros2 doctor`, rosbag2 recording and replay, the logging system and its throttles |
+| [02_Build_and_Tooling/03_Client_Libraries.ipynb](02_Build_and_Tooling/client_libraries.llms.md) | The rclpy / rclcpp / rcl / rmw / DDS layering and which layer owns which symptom, what each client library is good for, swapping the middleware |
+
+------------------------------------------------------------------------
+
+## Spatial and Temporal Foundations
+
+Where things are and when they were measured. The transform maths, the kinematics and the synchronisation policy in these four run for real, with numpy and scipy rather than a ROS install.
+
+| Notebook | What it covers |
+|----|----|
+| [03_Spatial_and_Temporal/00_tf2.ipynb](03_Spatial_and_Temporal/tf2.llms.md) | The transform tree and the map/odom contract, broadcasters and listeners, transform composition and inversion worked through numerically, time-indexed lookups, and a table of tree failures by symptom |
+| [03_Spatial_and_Temporal/01_Robot_Description.ipynb](03_Spatial_and_Temporal/robot_description.llms.md) | URDF links and joints, forward kinematics computed from a parsed URDF and checked against a closed form, robot_state_publisher and what publishes /joint_states, xacro macros, and where SDF fits |
+| [03_Spatial_and_Temporal/02_Conventions_and_Time.ipynb](03_Spatial_and_Temporal/conventions_and_time.llms.md) | REP-103 units and axes, ENU/NED conversion and the heading sign trap, REP-105 frame guarantees, wall against simulated time, integer nanosecond stamps, and what clock skew does to a lookup |
+| [03_Spatial_and_Temporal/03_Message_Synchronisation.ipynb](03_Spatial_and_Temporal/message_synchronisation.llms.md) | Why two sensor streams never align, ExactTime against ApproximateTime, the slop trade-off measured on synthetic streams, how to pick slop from robot speed, and diagnosing a silent synchroniser |
+
+------------------------------------------------------------------------
+
+## Perception
+
+Images and point clouds as ROS 2 carries them, and what it takes to put a model in the graph.
+
+| Notebook | What it covers |
+|----|----|
+| [05_Perception/00_Images_and_Calibration.ipynb](05_Perception/images_and_calibration.llms.md) | image_transport and the compressed transports, cv_bridge encodings and the depth-unit trap, what CameraInfo holds, pinhole projection and rectification computed with numpy and OpenCV, and a symptom table for wrong geometry |
+| [05_Perception/01_Point_Clouds_and_Lidar.ipynb](05_Perception/point_clouds_and_lidar.llms.md) | PointCloud2 as a byte buffer decoded with numpy structured dtypes, why field offsets are not optional, pointcloud_to_laserscan reimplemented and plotted, what the 2D reduction throws away, and organised clouds from depth images |
+| [05_Perception/02_Inference_Node_Integration.ipynb](05_Perception/inference_node_integration.llms.md) | The QoS profile that stops a slow model queueing, keeping inference off the executor, choosing between ONNX Runtime, TensorRT and OpenVINO, which vision messages to publish, and budgeting on a small machine |
+
+------------------------------------------------------------------------
+
+## Simulation and Hardware
+
+Where ROS 2 meets a simulator and where it meets a motor. The `ros2_control` boundary is what lets one set of controllers drive both.
+
+| Notebook | What it covers |
+|----|----|
+| [04_Simulation_and_Hardware/00_Gazebo_and_Bridges.ipynb](04_Simulation_and_Hardware/gazebo_and_bridges.llms.md) | Which Gazebo is which (Classic is end of life), `gz` basics, ros_gz_bridge direction syntax and config, bridging the clock first, spawning from one URDF, sensor plugins and the missing-system trap, authoring worlds |
+| [04_Simulation_and_Hardware/01_Other_Simulators_and_Sim_to_Real.ipynb](04_Simulation_and_Hardware/other_simulators_and_sim_to_real.llms.md) | Webots and Isaac Sim against Gazebo with their real costs, a table for choosing, what transfers from simulation unchanged and what has to be earned on hardware, and the practices that narrow the gap |
+| [04_Simulation_and_Hardware/02_ros2_control.ipynb](04_Simulation_and_Hardware/ros2_control.llms.md) | The control loop and its layers, declaring hardware in the URDF, writing a hardware interface and the real-time rules for read/write, the controller manager lifecycle, the standard controllers, and mock hardware as the fastest test |
+| [04_Simulation_and_Hardware/03_Drivers_and_micro_ROS.ipynb](04_Simulation_and_Hardware/drivers_and_micro_ros.llms.md) | What a driver owes the graph, serial and udev rules, SocketCAN and bus-off, micro-ROS and its agent and when not to use it, and what real-time actually requires |
+
+------------------------------------------------------------------------
+
+## Middleware and DDS
+
+The layer underneath everything, and the one that owns the case of two machines that cannot see each other.
+
+| Notebook | What it covers |
+|----|----|
+| [07_Middleware_DDS/00_Discovery_and_RMW.ipynb](07_Middleware_DDS/discovery_and_rmw.llms.md) | Discovery without a master, the port arithmetic a domain ID implies, discovery-range settings, the RMW implementations and the rule that they must match, interface pinning on a multi-homed machine, the discovery server, and a symptom-to-layer table |
+| [07_Middleware_DDS/01_Multi_Machine_and_Zenoh.ipynb](07_Middleware_DDS/multi_machine_and_zenoh.llms.md) | The three settings that must agree across machines, multicast over Wi-Fi and static peers, the bandwidth arithmetic and the measured cost of per-subscriber copies, VPNs and their caveats, and the Zenoh RMW |
+
+------------------------------------------------------------------------
+
+## Navigation and Manipulation
+
+The two big application stacks. The costmap and behaviour-tree notebooks build working miniatures of both mechanisms rather than describing them.
+
+| Notebook | What it covers |
+|----|----|
+| [06_Navigation_and_Manipulation/00_SLAM_and_Localization.ipynb](06_Navigation_and_Manipulation/slam_and_localization.llms.md) | The map/odom contract and who may publish it, slam_toolbox modes and the save-versus-serialize trap, AMCL tuning and why it needs an initial pose, robot_localization EKF configuration, and RGB-D SLAM lessons from real hardware |
+| [06_Navigation_and_Manipulation/01_Nav2_Bringup.ipynb](06_Navigation_and_Manipulation/nav2_bringup.llms.md) | What the stack is made of and the request path for one goal, the lifecycle manager and its bond timeout, how the parameter file is keyed, sending goals, and a bring-up symptom table |
+| [06_Navigation_and_Manipulation/02_Costmaps_Planners_and_Controllers.ipynb](06_Navigation_and_Manipulation/costmaps_planners_and_controllers.llms.md) | Costmap layers and why the local one lives in odom, the inflation cost model built and plotted, A\* through a doorway, the radius that decides passability against the scaling factor that only shapes preference, and pure pursuit executed and measured |
+| [06_Navigation_and_Manipulation/03_Behaviour_Trees_and_Recovery.ipynb](06_Navigation_and_Manipulation/behaviour_trees_and_recovery.llms.md) | Why a tree rather than a state machine, Sequence/Fallback/decorator semantics implemented and ticked, Nav2’s default tree and its three custom node types, the recovery behaviours and their real risks, waypoint following |
+| [06_Navigation_and_Manipulation/04_MoveIt2_Overview.ipynb](06_Navigation_and_Manipulation/moveit2_overview.llms.md) | The move_group architecture, the planning scene and collision objects, attached objects and the octomap, the SRDF and its machine-generated collision list, what the Setup Assistant produces, and where a plan fails to reach hardware |
+| [06_Navigation_and_Manipulation/05_Kinematics_and_Motion_Planning.ipynb](06_Navigation_and_Manipulation/kinematics_and_motion_planning.llms.md) | Why IK is hard, the solvers and when to swap KDL, OMPL against Pilz and what sampling costs you, servo and its singularity thresholds, trajectory execution tolerances, and pick and place as an explicit sequence |
+
+------------------------------------------------------------------------
+
+## Testing, Deployment and Operations
+
+Getting code verified, onto a robot, and keeping it running there.
+
+| Notebook | What it covers |
+|----|----|
+| [08_Testing_Deployment_Ops/00_Testing_and_Linting.ipynb](08_Testing_Deployment_Ops/testing_and_linting.llms.md) | The three testable levels and why most of a suite should be the first, pytest fixtures that pair init and shutdown, gtest wiring, launch_testing and why it is the flakiest thing you own, the ament linters, and CI that catches an incomplete manifest |
+| [08_Testing_Deployment_Ops/01_Containers_and_Cross_Compilation.ipynb](08_Testing_Deployment_Ops/containers_and_cross_compilation.llms.md) | The official images and a multi-stage build, why DDS makes container networking the real problem, dev containers, three routes to an arm64 build and when each is worth it |
+| [08_Testing_Deployment_Ops/02_Service_Management_and_Diagnostics.ipynb](08_Testing_Deployment_Ops/service_management_and_diagnostics.llms.md) | A systemd unit for a launch file and the environment trap that breaks it, robot_upstart, diagnostic_updater with a frequency watchdog, and a symptom table for a robot that will not start |
+| [08_Testing_Deployment_Ops/03_Security_and_Fleet_Ops.ipynb](08_Testing_Deployment_Ops/security_and_fleet_ops.llms.md) | That the default is no security at all, SROS2 and its real maintenance cost, Foxglove and rosbridge for remote work, and what fleet operation needs beyond one robot |
+
+------------------------------------------------------------------------
+
+## Ecosystem and Process
+
+How the project releases, what the conventions are, and migrating from ROS 1.
+
+| Notebook | What it covers |
+|----|----|
+| [09_Ecosystem_and_Process/00_Distros_REPs_and_rosdep.ipynb](09_Ecosystem_and_Process/distros_reps_and_rosdep.llms.md) | What an LTS commitment does and does not cover, the upgrade trap where an OS upgrade silently changes the ROS distribution, the REPs worth knowing by number, and how rosdep resolves a dependency |
+| [09_Ecosystem_and_Process/01_Release_and_Migration.ipynb](09_Ecosystem_and_Process/release_and_migration.llms.md) | Releasing with bloom and what the buildfarm does with it, the ROS 1 to ROS 2 mapping, the conversions that take real rework, and why ros1_bridge is a transition tool rather than an architecture |
+
+------------------------------------------------------------------------
+
+## Not Covered Yet
+
+All 34 notebooks planned for this site exist, so what follows is a list of real gaps in the subject rather than a roadmap.
+
+**No runnable ROS 2 code anywhere, deliberately.** ROS 2 Jazzy is apt-installed against Python 3.12 and `rclpy` cannot be pip-installed into this repository’s Python 3.14 virtual environment. The eight notebooks that execute are therefore pure-Python reimplementations of ROS 2 *mechanisms* - transform composition, forward kinematics from a URDF, the ApproximateTime policy, PointCloud2 decoding, costmap inflation, A\* and pure pursuit, a behaviour-tree tick engine - not ROS 2 programs. Every `rclpy` and `rclcpp` snippet on this site is illustrative and unexecuted.
+
+Subjects a reader might reasonably expect and will not find:
+
+- **Legged locomotion and whole-body control.** Nothing here covers balance, contact scheduling or model-predictive whole-body control.
+- **Multi-robot task allocation.** The networking for multiple robots is covered in [07_Middleware_DDS/01_Multi_Machine_and_Zenoh.ipynb](07_Middleware_DDS/multi_machine_and_zenoh.llms.md); deciding which robot does which job is not.
+- **Functional safety and certification.** ISO 10218, ISO 3691-4, performance levels and safety-rated hardware are a different discipline from anything here, and SROS2 is not a safety mechanism.
+- **Vendor-specific driver guides.** No per-lidar or per-arm setup walkthroughs; the general obligations of a driver are in [04_Simulation_and_Hardware/03_Drivers_and_micro_ROS.ipynb](04_Simulation_and_Hardware/drivers_and_micro_ros.llms.md).
+- **SLAM algorithm internals.** Graph optimisation, scan matching and bundle adjustment are treated as things `slam_toolbox` and RTAB-Map do, not as mathematics to derive.
+- **Isaac ROS in depth.** NITROS, `isaac_ros_visual_slam` and nvblox are mentioned as options, not documented.
+- **MoveIt Task Constructor in depth.** Named as the right tool for multi-stage manipulation, with its stage API left uncovered.
+- **Real-time measurements.** The requirements for hard real-time are described; no `cyclictest` numbers or tuned configurations are presented.
+- **Windows and macOS.** Everything assumes Ubuntu 24.04.
+- **Gazebo Classic**, excluded on purpose: it reached end of life in January 2025.
+
+This is a set of working notes, not an API reference. For API documentation use `docs.ros.org`; for the reasoning behind ROS 2’s design, `design.ros2.org`.
+
+Nothing here is private, so there are no `p_` notebooks.
+
+------------------------------------------------------------------------
+
+Back to top
