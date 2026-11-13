@@ -1,3 +1,9 @@
+/*-- scss:defaults --*/
+// Bootstrap and Bootswatch variables ($primary, $font-family-sans-serif, ...) go here.
+// This file is layered on both the light and the dark theme, so a value set here
+// applies to both modes.
+
+/*-- scss:rules --*/
 .cell {
   margin-bottom: 1rem;
 }

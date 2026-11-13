@@ -23,12 +23,17 @@ project:
 format:
   html:
     author: "Benedict Thekkel"
+    # custom.scss holds the shared variables and rules. It replaces the per-submodule
+    # styles.css and must stay listed under both themes, or dark mode loses it.
     theme:
-      light: flatly
-      dark: darkly
-    css: styles.css
+      light: [flatly, custom.scss]
+      dark: [darkly, custom.scss]
     toc: true
     
+# This file is a template. `just copy_quarto` fills bthek1 and ROS2_docs from each
+# submodule's .gitmodules URL, so every site links to its own GitHub repo. Quarto
+# cannot do this itself: a {{< meta >}} shortcode in a navbar or footer href is
+# left unexpanded (tested on Quarto 1.10).
 website:
   image: "Logo.svg"
   favicon: "favi.svg"
@@ -97,31 +102,33 @@ website:
         menu:
         - text: "Business Doc"
           href: https://bthek1.github.io/Business_doc/
-        - text: "Ideas Doc"
-          href: https://bthek1.github.io/Philosophy_doc/
         - text: "Finances"
-          href: https://bthek1.github.io/Finances/ 
+          href: https://bthek1.github.io/Finances/
+
+      - text: "Docs"
+        menu:
+        - text: "Blog"
+          href: https://bthek1.github.io/bthek1_blog/
+        - text: "Ideas"
+          href: https://bthek1.github.io/Philosophy_doc/
         - text: "Other"
           href: https://bthek1.github.io/Other/
-          
-      - text: "Blog"
-        href: https://bthek1.github.io/bthek1_blog/
-        
+
       - text: "Help"
         menu:
           - text: "Report a Bug"
             icon: "bug"
-            href: "https://github.com/bthek1/bthek1_blog/issues"
+            href: "https://github.com/bthek1/ROS2_docs/issues"
           - text: "Ask a Question"
             icon: "chat-right-text"
-            href: "https://github.com/bthek1/bthek1_blog/issues"
+            href: "https://github.com/bthek1/ROS2_docs/issues"
           - text: "FAQ"
             icon: "question-circle"
-            href: "https://github.com/bthek1/bthek1_blog/issues"
+            href: "https://github.com/bthek1/ROS2_docs/issues"
           
     tools:
       - icon: github
-        href: "https://github.com/bthek1"
+        href: "https://github.com/bthek1/ROS2_docs"
         aria-label: Github
       - icon: linkedin
         href: "https://www.linkedin.com/in/benedict-thekkel/"
@@ -133,7 +140,7 @@ website:
       - text: "About"
         href: "index.ipynb"
       - text: "FAQ"
-        href: "https://github.com/bthek1/bthek1_blog/issues"    
+        href: "https://github.com/bthek1/ROS2_docs/issues"
       - text: "License"
         href: "https://bthek1.github.io/bthek1_blog/index.html"
       - text: "Trademark"
@@ -142,7 +149,7 @@ website:
         
     right:
       - icon: github
-        href: "https://github.com/bthek1"
+        href: "https://github.com/bthek1/ROS2_docs"
         aria-label: Github
       - icon: linkedin
         href: "https://www.linkedin.com/in/benedict-thekkel/"

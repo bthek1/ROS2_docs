@@ -28,3 +28,4 @@ version = {attr = "ROS2_docs.__version__"}
 include = ["ROS2_docs"]
 
 [tool.nbdev]
+custom_sidebar = true
